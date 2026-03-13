@@ -1,0 +1,25 @@
+.digits {
+    display: flex;
+    flex-wrap: wrap;
+    width: 75px;
+    height: 50px;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.whole_app {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.operators {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#zero {
+    width: 100%;
+}
