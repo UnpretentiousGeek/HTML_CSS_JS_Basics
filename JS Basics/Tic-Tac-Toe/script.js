@@ -1,29 +1,10 @@
-function section() {
-    mark = ""
-
-    const set_mark = (sign) => {
-        if (mark == "") {
-            mark = sign;
-        }
-    }
-
-    const get_mark = () => {
-        return mark;
-    }
-
-    const reset_mark = () => {
-        mark = "";
-    }
-
-    return { set_mark, get_mark, reset_mark }
-}
-
-player_data = []
+player_data = [];
 
 
 function player() {
-    moves = [];
-    if (length(player_data) < 1) {
+    const moves = [];
+    let mark = '';
+    if (player_data.length < 1) {
         mark = "X";
         player_data.push(mark)
     } else {
@@ -36,40 +17,104 @@ function player() {
     }
 
     const get_mark = () => {
-        return mark;
+        return (mark);
     }
 
-    return {make_move, get_mark}
-    
+    const get_moves = () => {
+        return (moves);
+    }
+
+    return { make_move, get_mark, get_moves }
+
 
 }
 
 
 function gameboard() {
 
-    const game_array = [[],[],[]];
-    for (i = 0; i < 3; i++) {
-        for (j = 0; j < 3; j++) {
-            game_array[i].push(section());
+    const game_array = [];
+
+
+    const initialize_board = () => {
+        for (i = 0; i < 3; i++) {
+            game_array.push(["", "", ""]);
+
         }
-        
     }
 
-    const check_winner = () => {
-         
+    const check_winner = (player) => {
+        const win_combo = {
+            r1: ["00", "01", "02"],
+            r2: ["10", "11", "12"],
+            r3: ["20", "21", "22"],
+            c1: ["00", "10", "20"],
+            c2: ["01", "11", "21"],
+            c3: ["02", "12", "22"],
+            d1: ["00", "11", "22"],
+            d2: ["02", "11", "20"]
+        };
+
+        console.log(player.get_moves());
+        for (const combo in win_combo) {
+            console.log("checking");
+
+            if (new Set(win_combo[combo]).isSubsetOf(new Set(player.get_moves()))) {
+                console.log("won");
+                return ("Won");
+            }
+        }
+
+        return "";
+
+
+
+    }
+
+    const logic = (winner,player, i) => {
+        player_input = prompt("Enter Position: ");
+        game_array[Number(player_input[0])][[Number(player_input[1])]] = player.get_mark();
+        player.make_move(player_input);
+        console.log(player.get_mark());
+
+
+        if (i > 4) {
+            winner = check_winner(player);
+        }
+        return winner;
     }
 
 
     const play = (player_1, player_2) => {
-        i = 0;
-        winner = '';
+        initialize_board();
+        let i = 0;
+        let winner = "";
         while (winner == "" && i < 9) {
-            player_1_input = prompt("Enter Position: ")
-            game_array[player_1_input[0]][player_1_input[1]].push(player_1.get_mark)
-            player_1.make_move([player_1_input[0]],[player_1_input[1]])
-            winner = check_winner(player_1)
+            console.log("player1 move");
+            i = i + 1;
+            winner = logic(winner,player_1, i);
+
+            if (winner == "" && i < 9) {
+                console.log("player2 move");
+                i = i + 1;
+                winner = logic(winner, player_2, i);
+            }
+            if (winner == "" && i >= 9) {
+                winner = "draw";
+                console.log(game_array)
+            }
         }
+        console.log(winner);
+        console.log(game_array);
     }
+
+    return (play);
 }
 
+const John = player();
+const son = player();
+
+
+
+const Game_1 = gameboard();
+Game_1(John, son);
 
