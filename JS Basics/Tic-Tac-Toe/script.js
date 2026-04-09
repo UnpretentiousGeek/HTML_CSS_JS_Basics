@@ -1,8 +1,8 @@
 player_data = [];
 
 
-function player() {
-    const moves = [];
+function player(name) {
+    let moves = [];
     let mark = '';
     if (player_data.length < 1) {
         mark = "X";
@@ -24,7 +24,15 @@ function player() {
         return (moves);
     }
 
-    return { make_move, get_mark, get_moves }
+    const get_name = () => {
+        return name;
+    }
+
+    const reset = () => {
+        moves = [];
+    }
+
+    return { make_move, get_mark, get_moves, get_name, reset }
 
 
 }
@@ -33,14 +41,22 @@ function player() {
 function gameboard() {
 
     const game_array = [];
+    let winner = "";
+    const player_1 = player(prompt("Enter Player 1 Name"));
+    const player_2 = player(prompt("Enter Player 2 Name"));
+
 
 
     const initialize_board = () => {
-        for (i = 0; i < 3; i++) {
-            game_array.push(["", "", ""]);
-
-        }
+        const blocks = document.querySelectorAll('.block');
+        blocks.forEach(block => {
+            block.textContent = "";
+        })
+        winner = "";
+        player_1.reset();
+        player_2.reset();
     }
+
 
     const check_winner = (player) => {
         const win_combo = {
@@ -56,65 +72,73 @@ function gameboard() {
 
         console.log(player.get_moves());
         for (const combo in win_combo) {
-            console.log("checking");
-
             if (new Set(win_combo[combo]).isSubsetOf(new Set(player.get_moves()))) {
-                console.log("won");
-                return ("Won");
+                winner = player;
+                alert(player.get_name() + " won");
+
             }
         }
-
-        return "";
-
-
-
     }
 
-    const logic = (winner,player, i) => {
-        player_input = prompt("Enter Position: ");
-        game_array[Number(player_input[0])][[Number(player_input[1])]] = player.get_mark();
+    const logic = (usr_input, player) => {
+        player_input = usr_input.slice(-2);
         player.make_move(player_input);
-        console.log(player.get_mark());
+        check_winner(player);
 
 
-        if (i > 4) {
-            winner = check_winner(player);
-        }
-        return winner;
     }
 
 
-    const play = (player_1, player_2) => {
+    const play = () => {
         initialize_board();
-        let i = 0;
-        let winner = "";
-        while (winner == "" && i < 9) {
-            console.log("player1 move");
-            i = i + 1;
-            winner = logic(winner,player_1, i);
 
-            if (winner == "" && i < 9) {
-                console.log("player2 move");
-                i = i + 1;
-                winner = logic(winner, player_2, i);
-            }
-            if (winner == "" && i >= 9) {
-                winner = "draw";
-                console.log(game_array)
-            }
-        }
-        console.log(winner);
-        console.log(game_array);
+        let player_turn = true;
+        let i = 0;
+
+        const blocks = document.querySelectorAll('.block')
+        blocks.forEach(block => {
+            block.addEventListener('click', (event) => {
+                if (winner == "") {
+                    if (event.target.textContent == "") {
+                        classArray = Array.from(event.target.classList);
+                        if (player_turn) {
+                            player_turn = !player_turn;
+                            choice = document.querySelector('.' + classArray[0]);
+                            choice.textContent = player_1.get_mark();
+                            logic(classArray[0], player_1);
+                            i = i + 1;
+
+                        } else {
+                            player_turn = !player_turn;
+                            choice = document.querySelector('.' + classArray[0]);
+                            choice.textContent = player_2.get_mark();
+                            logic(classArray[0], player_2);
+                            i = i + 1;
+                        }
+                    }
+                }
+
+                if (winner == "" && i == 9) {
+                    alert("Draw");
+                }
+
+
+
+            });
+        });
+
+        const clear = document.querySelector('.clear');
+        clear.addEventListener('click', (e) => {
+            initialize_board();
+            player_turn = true;
+            i = 0;
+
+        });
     }
 
     return (play);
 }
 
-const John = player();
-const son = player();
-
-
-
 const Game_1 = gameboard();
-Game_1(John, son);
+Game_1();
 
