@@ -129,9 +129,11 @@ function gameboard() {
 
         const clear = document.querySelector('.clear');
         clear.addEventListener('click', (e) => {
+            e.preventDefault();
             initialize_board();
             player_turn = true;
             i = 0;
+            
 
         });
     }
